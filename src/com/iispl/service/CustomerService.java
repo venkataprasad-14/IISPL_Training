@@ -3,7 +3,6 @@ package com.iispl.service;
 import java.util.List;
 import java.util.Scanner;
 
-import com.iispl.model.Account;
 import com.iispl.model.Customer;
 
 public class CustomerService {

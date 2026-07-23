@@ -23,12 +23,12 @@ public class BankApplication {
 			sc.nextLine();
 			if(person=='a' || person=='A')
 			{
-			/*------------menu for admin------------*/
+			/*------------ADMIN MENU------------*/
 				System.out.println("Enter your choice");
 				System.out.println("1.Create Account "
 						+ " 2.Display Accounts "
 						+ " 3.Deactivate Account "
-						+ " 4.Create Transaction "
+						+ " 4.Create Admin Transaction "
 						+ " 5.View Transactions ");
 				
 				int adminChoice = sc.nextInt();
@@ -51,7 +51,7 @@ public class BankApplication {
 						
 							break;
 					case 4:
-						//TransactionService.createTransaction(customersList);
+						TransactionService.createAdminTransaction(customersList);
 						break;
 					case 5:
 						TransactionService.viewTransactions(customersList);
@@ -62,7 +62,7 @@ public class BankApplication {
 			}
 			else if(person=='c' || person=='C')
 			{
-				/*------------menu for customer------------*/
+				/*------------CUSTOMER MENU------------*/
 				System.out.println("Enter your choice");
 				System.out.println("1.Display Account Details "
 								+" 2.Deposit Amount "

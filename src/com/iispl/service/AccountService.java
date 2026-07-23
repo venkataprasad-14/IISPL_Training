@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.iispl.enums.AccountStatus;
+import com.iispl.enums.TransactionStatus;
+import com.iispl.enums.TransactionType;
 import com.iispl.model.Account;
 import com.iispl.model.CurrentAccount;
 import com.iispl.model.Customer;
 import com.iispl.model.SavingsAccount;
+import com.iispl.model.Transaction;
 
 public class AccountService {
 	static Scanner sc = new Scanner(System.in);
@@ -41,6 +44,13 @@ public class AccountService {
 									isActive, 
 									amount, 
 									LocalDate.now());
+						Transaction transaction = TransactionService.createTransaction(
+				                amount,
+				                TransactionType.CREDIT,
+				                TransactionStatus.SUCCESS,
+				                "Amount deposited into your account while opening account.");
+
+				        account.getTransactionList().add(transaction);
 						break;
 			
 				case 2://creating current account
@@ -51,6 +61,13 @@ public class AccountService {
 								amount,
 								LocalDate.now(),
 								gst	);
+						Transaction transaction1 = TransactionService.createTransaction(
+				                amount,
+				                TransactionType.CREDIT,
+				                TransactionStatus.SUCCESS,
+				                "Amount deposited into your account while opening account.");
+
+				        account.getTransactionList().add(transaction1);
 						break;
 				default:
 						System.out.println("Invalid choice !!");
@@ -109,7 +126,7 @@ public class AccountService {
 	public static Account findAccount(List <Customer> customersList)
 	{
 		Customer customer=null;
-		sc.nextLine();
+		//sc.nextLine();
 		System.out.println("Enter customer code ");
 		String customerCode=sc.nextLine();
 		

@@ -16,7 +16,8 @@ public class TransactionService {
 
     private static Scanner sc = new Scanner(System.in);
 
-    /*----------method to Deposit Amount --------------*/
+    /*---------------- CUSTOMER DEPOSIT ----------------*/
+
     public static void deposit(List<Customer> customersList) {
 
         Account account = getActiveAccount(customersList);
@@ -24,26 +25,24 @@ public class TransactionService {
         if (account == null)
             return;
 
-        System.out.println("Enter Deposit Amount");
+        System.out.println("Enter Deposit Amount : ");
         BigDecimal amount = sc.nextBigDecimal();
 
-        //to Update Balance
         account.setBalance(account.getBalance().add(amount));
 
-        // Creating a Transaction
         Transaction transaction = createTransaction(
                 amount,
                 TransactionType.CREDIT,
-                TransactionStatus.SUCCESS);
+                TransactionStatus.SUCCESS,
+                "Amount deposited into your account.");
 
-        // Save Transaction
         account.getTransactionList().add(transaction);
-
-        System.out.println("\nAmount Deposited Successfully.");
+        System.out.println("Amount Deposited Successfully.");
         System.out.println("Updated Balance : " + account.getBalance());
     }
 
-    /*---------Method to Withdraw Amount --------------*/
+    /*---------------- CUSTOMER WITHDRAW ----------------*/
+
     public static void withdraw(List<Customer> customersList) {
 
         Account account = getActiveAccount(customersList);
@@ -51,22 +50,22 @@ public class TransactionService {
         if (account == null)
             return;
 
-        System.out.println("Enter Withdraw Amount");
+        System.out.println("Enter Withdraw Amount : ");
         BigDecimal amount = sc.nextBigDecimal();
 
         Transaction transaction;
 
         if (account.getBalance().compareTo(amount) >= 0) {
 
-            // Update Balance
             account.setBalance(account.getBalance().subtract(amount));
 
             transaction = createTransaction(
                     amount,
                     TransactionType.DEBIT,
-                    TransactionStatus.SUCCESS);
+                    TransactionStatus.SUCCESS,
+                    "Amount withdrawn from your account.");
 
-            System.out.println("\nAmount Withdrawn Successfully.");
+            System.out.println("Amount Withdrawn Successfully.");
             System.out.println("Updated Balance : " + account.getBalance());
 
         } else {
@@ -74,16 +73,95 @@ public class TransactionService {
             transaction = createTransaction(
                     amount,
                     TransactionType.DEBIT,
-                    TransactionStatus.FAILLED);
+                    TransactionStatus.FAILLED,
+                    "Withdrawal failed due to insufficient balance.");
 
             System.out.println("Insufficient Balance.");
         }
 
-        // Save Transaction
         account.getTransactionList().add(transaction);
     }
 
-    /*-------------method to  View list of Transactions ----------------*/
+    /*---------------- ADMIN TRANSACTION ----------------*/
+
+    public static void createAdminTransaction(List<Customer> customersList) {
+
+        Account account = getActiveAccount(customersList);
+
+        if (account == null)
+            return;
+
+        System.out.println("1. Credit");
+        System.out.println("2. Debit");
+        System.out.print("Choose Transaction Type : ");
+        int choice = sc.nextInt();
+
+        System.out.print("Enter Amount : ");
+        BigDecimal amount = sc.nextBigDecimal();
+
+        sc.nextLine(); // Consume newline
+
+        System.out.print("Enter Description : ");
+        String userDescription = sc.nextLine();
+
+        Transaction transaction;
+
+        switch (choice) {
+
+        case 1:
+
+            account.setBalance(account.getBalance().add(amount));
+
+            transaction = createTransaction(
+                    amount,
+                    TransactionType.CREDIT,
+                    TransactionStatus.SUCCESS,
+                    userDescription + " credited to your account.");
+
+            account.getTransactionList().add(transaction);
+
+            System.out.println("Amount Credited Successfully.");
+            System.out.println("Updated Balance : " + account.getBalance());
+
+            break;
+
+        case 2:
+
+            if (account.getBalance().compareTo(amount) >= 0) {
+
+                account.setBalance(account.getBalance().subtract(amount));
+
+                transaction = createTransaction(
+                        amount,
+                        TransactionType.DEBIT,
+                        TransactionStatus.SUCCESS,
+                        "Money debited for " + userDescription + ".");
+
+                System.out.println("Amount Debited Successfully.");
+                System.out.println("Updated Balance : " + account.getBalance());
+
+            } else {
+
+                transaction = createTransaction(
+                        amount,
+                        TransactionType.DEBIT,
+                        TransactionStatus.FAILLED,
+                        "Failed to debit amount for " + userDescription + ".");
+
+                System.out.println("Insufficient Balance.");
+            }
+
+            account.getTransactionList().add(transaction);
+
+            break;
+
+        default:
+            System.out.println("Invalid Choice.");
+        }
+    }
+
+    /*---------------- VIEW TRANSACTIONS ----------------*/
+
     public static void viewTransactions(List<Customer> customersList) {
 
         Account account = AccountService.findAccount(customersList);
@@ -96,26 +174,28 @@ public class TransactionService {
         List<Transaction> transactions = account.getTransactionList();
 
         if (transactions.isEmpty()) {
-            System.out.println("No Transactions Available.");
+            System.out.println("No Transactions Found.");
             return;
         }
 
-        System.out.println("\n============== TRANSACTIONS ==============");
+        System.out.println("\n============== TRANSACTION HISTORY ==============");
 
         for (Transaction transaction : transactions) {
 
-            System.out.println("-----------------------------------------");
-            System.out.println("Transaction ID     : " + transaction.getTransactionId());
-            System.out.println("Amount             : " + transaction.getAmount());
-            System.out.println("Type               : " + transaction.getTransactionType());
-            System.out.println("Status             : " + transaction.getTransactionStatus());
-            System.out.println("Date               : " + transaction.getTransactionDate());
+            System.out.println("-------------------------------------------");
+            System.out.println("Transaction ID : " + transaction.getTransactionId());
+            System.out.println("Amount         : " + transaction.getAmount());
+            System.out.println("Type           : " + transaction.getTransactionType());
+            System.out.println("Status         : " + transaction.getTransactionStatus());
+            System.out.println("Date           : " + transaction.getTransactionDate());
+            System.out.println("Description    : " + transaction.getDescription());
         }
 
-        System.out.println("-----------------------------------------");
+        System.out.println("-------------------------------------------");
     }
 
-    /*-----------this is a helper Method ----------------*/
+    /*--------------Helper method to get account status ----------------*/
+
     private static Account getActiveAccount(List<Customer> customersList) {
 
         Account account = AccountService.findAccount(customersList);
@@ -133,11 +213,13 @@ public class TransactionService {
         return account;
     }
 
-    /*---------------- Create Transaction ----------------*/
-    private static Transaction createTransaction(
+    /*---------------- CREATE TRANSACTION ----------------*/
+
+   public static Transaction createTransaction(
             BigDecimal amount,
             TransactionType transactionType,
-            TransactionStatus transactionStatus) {
+            TransactionStatus transactionStatus,
+            String description) {
 
         String transactionId = "TXN"
                 + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
@@ -147,7 +229,8 @@ public class TransactionService {
                 amount,
                 transactionStatus,
                 transactionType,
-                LocalDate.now());
+                LocalDate.now(),
+                description);
     }
 
 }

@@ -13,7 +13,8 @@ public class Transaction {
 	private TransactionStatus transactionStatus;
 	private TransactionType transactionType;
 	private LocalDate transactionDate;
-
+	private String description;
+	
 	/*-----getters and setters to set and get values  -----*/
 	public String getTransactionId() {
 		return transactionId;
@@ -46,15 +47,24 @@ public class Transaction {
 		this.transactionDate = transactionDate;
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	/*-----constructor to initialise member variables-----*/
 	public Transaction(String transactionId, BigDecimal amount, TransactionStatus transactionStatus,
-			TransactionType transactionType, LocalDate transactionDate) {
+			TransactionType transactionType, LocalDate transactionDate, String description) {
+		
 		this.transactionId = transactionId;
 		this.amount = amount;
 		this.transactionStatus = transactionStatus;
 		this.transactionType = transactionType;
 		this.transactionDate = transactionDate;
+		this.description = description;
 	}
-
+	
+	
 	
 }
