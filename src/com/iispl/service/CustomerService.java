@@ -30,15 +30,15 @@ public class CustomerService {
 			System.out.println("Customer already exists.");
 			return customer;
 		}
-
-		System.out.println("Enter Customer Name");
-		String customerName = sc.nextLine();
-
-		customer = new Customer(customerCode, customerName);
-
-		System.out.println("Customer created successfully.");
-
-		return customer;
-	}
+		else {
+			System.out.println("Enter Customer Name");
+			String customerName = sc.nextLine();
 	
+			customer = new Customer(customerCode, customerName);
+	
+			System.out.println("Customer created successfully.");
+	
+			return customer;
+		}
+	}
 }
