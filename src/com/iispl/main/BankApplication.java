@@ -1,6 +1,5 @@
 package com.iispl.main;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -32,6 +31,7 @@ public class BankApplication {
 						+ " 5.View Transactions ");
 				
 				int adminChoice = sc.nextInt();
+				
 				switch (adminChoice) 
 				{
 					case 1:

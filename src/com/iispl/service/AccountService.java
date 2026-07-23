@@ -128,10 +128,10 @@ public class AccountService {
 		Customer customer=null;
 		//sc.nextLine();
 		System.out.println("Enter customer code ");
-		String customerCode=sc.nextLine();
+		String customerCode=sc.next();
 		
 		System.out.println("Enter account number");
-		String accountNumber=sc.nextLine();
+		String accountNumber=sc.next();
 		
 		customer=CustomerService.findCustomer(customersList,customerCode);
 		if(customer!=null)
